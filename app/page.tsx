@@ -9,12 +9,12 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [showIntro, setShowIntro] = useState(true); // intro with fireworks
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hasOpenedOnceRef = useRef(false);
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
   // Close intro & start music (MOBILE‑SAFE: runs directly in click handler)
   const handleCloseIntro = () => {
-    // Start audio first, then hide the overlay
     if (audioRef.current) {
       audioRef.current
         .play()
@@ -32,7 +32,7 @@ export default function Home() {
   useEffect(() => {
     if (!showIntro) return;
 
-    const duration = 3500; // ms
+    const duration = 30000; // ms
     const end = Date.now() + duration;
     let animationFrameId: number | undefined;
 
@@ -71,36 +71,61 @@ export default function Home() {
     };
   }, [showIntro]);
 
-  return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-rose-700 via-pink-500 to-amber-300 flex items-center justify-center px-3 sm:px-4 md:px-8 py-6 sm:py-10">
-      {/* Hidden audio player for birthday music */}
-      <audio
-        ref={audioRef}
-        src="/birthday.mp3"
-        preload="auto"
-        loop
-      />
+  // Extra confetti burst the first time the card opens
+  useEffect(() => {
+    if (isOpen && !hasOpenedOnceRef.current) {
+      hasOpenedOnceRef.current = true;
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        startVelocity: 45,
+        gravity: 0.9,
+        scalar: 1.1,
+        origin: { x: 0.5, y: 0.3 },
+        colors: ["#fecaca", "#fb7185", "#fbbf24", "#e0f2fe", "#c4b5fd"],
+      });
+    }
+  }, [isOpen]);
 
-      {/* Soft background glow */}
+  return (
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-rose-800 via-pink-500 to-amber-300 flex items-center justify-center px-3 sm:px-4 md:px-8 py-6 sm:py-10">
+      {/* Hidden audio player for birthday music */}
+      <audio ref={audioRef} src="/birthday.mp3" preload="auto" loop />
+
+      {/* Soft background glows */}
       <div className="pointer-events-none absolute -top-10 -left-10 h-40 w-40 rounded-full bg-pink-300/40 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 right-0 h-52 w-52 rounded-full bg-amber-300/40 blur-3xl" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.2),_transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.28),_transparent_60%)]" />
+
+      {/* Floating decorative hearts */}
+      <FaHeart
+        className="pointer-events-none absolute left-6 top-10 text-rose-200/50 animate-bounce"
+        style={{ animationDuration: "3.5s" }}
+      />
+      <FaHeart
+        className="pointer-events-none absolute right-8 bottom-16 text-rose-100/60 animate-bounce"
+        style={{ animationDuration: "4.2s", animationDelay: "0.6s" }}
+      />
+      <FaHeart
+        className="pointer-events-none absolute left-1/2 bottom-5 -translate-x-1/2 text-pink-100/40 animate-pulse"
+        style={{ animationDuration: "2.8s" }}
+      />
 
       {/* Intro "Happy Birthday" overlay with fireworks */}
       {showIntro && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 px-4"
           onClick={handleCloseIntro} // tap anywhere: close + start music
         >
           <div className="flex flex-col items-center justify-center text-center max-w-xs sm:max-w-md">
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-[0.18em] sm:tracking-[0.35em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-pink-200 to-rose-300 drop-shadow-[0_0_35px_rgba(255,255,255,0.75)] leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-[0.18em] sm:tracking-[0.35em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-pink-200 to-rose-300 drop-shadow-[0_0_35px_rgba(255,255,255,0.75)] leading-tight">
               Happy&nbsp;Birthday
             </h1>
-            <p className="mt-3 text-sm sm:text-base md:text-lg text-rose-100 leading-snug">
+            <p className="mt-4 text-sm sm:text-base md:text-lg text-rose-50 leading-snug">
               To the most special woman in our lives
             </p>
-            <p className="mt-1 text-[11px] sm:text-xs text-rose-200/80">
-              (Tap anywhere to open your card & start the music)
+            <p className="mt-2 text-[11px] sm:text-xs text-rose-200/80">
+              Tap anywhere to open your card &amp; start the music
             </p>
           </div>
         </div>
@@ -121,21 +146,24 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Gradient border wrapper – animation reduced on small screens */}
+        {/* Gradient border wrapper */}
         <div
           onClick={handleToggle}
-          className={`relative rounded-[1.75rem] sm:rounded-[2.2rem] bg-gradient-to-r from-pink-300 via-rose-400 to-amber-300 p-[2px] sm:p-[3px] shadow-2xl transition-transform duration-500 sm:duration-700 ${
+          className={`relative rounded-[1.75rem] sm:rounded-[2.2rem] bg-gradient-to-r from-pink-200 via-rose-400 to-amber-300 p-[2px] sm:p-[3px] shadow-2xl transition-all duration-500 sm:duration-700 cursor-pointer ${
             isOpen
-              ? "sm:scale-105 md:scale-110 shadow-[0_24px_60px_rgba(0,0,0,0.4)]"
-              : "scale-100"
+              ? "sm:scale-105 md:scale-110 shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
+              : "scale-100 hover:sm:scale-105 hover:shadow-[0_18px_50px_rgba(0,0,0,0.45)]"
           }`}
         >
-          {/* Actual card – height adapts per breakpoint */}
-          <div className="relative h-[22rem] sm:h-[24rem] md:h-[26rem] lg:h-[28rem] overflow-hidden rounded-[1.6rem] sm:rounded-[2rem] bg-rose-50/95">
+          {/* Actual card */}
+          <div className="relative h-[23rem] sm:h-[25rem] md:h-[27rem] lg:h-[29rem] overflow-hidden rounded-[1.6rem] sm:rounded-[2rem] bg-rose-50/95">
+            {/* Subtle pattern / vignette inside */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,113,133,0.11),_transparent_55%)]" />
+
             {/* Inside message */}
             <div
-              className={`absolute inset-0 z-0 px-5 sm:px-8 md:px-14 py-6 sm:py-8 md:py-10 flex flex-col justify-center transition-opacity duration-700 ${
-                isOpen ? "opacity-100" : "opacity-0"
+              className={`absolute inset-0 z-0 px-5 sm:px-8 md:px-14 py-6 sm:py-8 md:py-10 flex flex-col justify-center transition-all duration-700 ${
+                isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
               }`}
             >
               <div className="mb-4 sm:mb-6">
@@ -147,22 +175,29 @@ export default function Home() {
                 </h2>
               </div>
 
-              <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-3 sm:mb-4 leading-relaxed">
-                Dear Mom,
-              </p>
+              <div className="space-y-3 sm:space-y-4 md:space-y-5 text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+                <p>Dear Mom,</p>
 
-              <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-3 sm:mb-4 leading-relaxed">
-                On your special day, I just want to say thank you for your
-                endless love, your patience, and your strength. You are the
-                heart of our family and the person who has always believed in me.
-              </p>
+                <p>
+                  On your special day, I just want to say thank you for your
+                  endless love, your patience, and your strength. You are the
+                  heart of our family and the one who has always believed in me,
+                  even when I didn&apos;t believe in myself.
+                </p>
 
-              <p className="text-sm sm:text-base md:text-lg text-gray-700 mb-5 sm:mb-6 leading-relaxed">
-                I am so grateful to call you my mother, and I love you more than
-                words can ever say.
-              </p>
+              
+                <p>
+                  I am so grateful to call you my mother, and I love you more
+                  than words can ever say.
+                </p>
+              </div>
 
-              <p className="text-right text-sm sm:text-base md:text-lg font-semibold text-rose-500 flex items-center justify-end gap-1">
+              <div className="mt-4 sm:mt-6 flex items-center justify-between text-xs sm:text-sm text-rose-400/80">
+                <span className="italic">Today and always, we celebrate you.</span>
+                <span className="h-px flex-1 mx-3 bg-rose-200/70" />
+              </div>
+
+              <p className="mt-2 text-right text-sm sm:text-base md:text-lg font-semibold text-rose-500 flex items-center justify-end gap-1">
                 With all my love,
                 <span>your child</span>
                 <FaHeart className="text-rose-400 animate-pulse" />
@@ -170,7 +205,7 @@ export default function Home() {
             </div>
 
             {/* Photo cover that splits to both sides */}
-            <div className="absolute inset-0 z-10 cursor-pointer">
+            <div className="absolute inset-0 z-10">
               <div className="relative w-full h-full">
                 {/* Left half */}
                 <div
@@ -200,18 +235,13 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-transparent" />
                 </div>
 
-                {/* Text overlay on the photo (only before open) */}
-                <div
-                  className={`absolute inset-0 flex flex-col items-center justify-center text-center text-white transition-opacity duration-500 ${
-                    isOpen ? "opacity-0" : "opacity-100"
-                  }`}
-                />
+                
               </div>
             </div>
 
             {/* Soft glow at bottom when open */}
             <div
-              className={`pointer-events-none absolute inset-x-0 bottom-0 h-16 sm:h-20 md:h-24 bg-gradient-to-t from-rose-200/70 via-transparent to-transparent transition-opacity duration-700 ${
+              className={`pointer-events-none absolute inset-x-0 bottom-0 h-16 sm:h-20 md:h-24 bg-gradient-to-t from-rose-200/80 via-transparent to-transparent transition-opacity duration-700 ${
                 isOpen ? "opacity-100" : "opacity-0"
               }`}
             />
