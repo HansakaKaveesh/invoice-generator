@@ -142,7 +142,7 @@ export default function Home() {
           <p className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-base text-pink-50/90">
             {isOpen
               ? "Tap the card to gently close it again."
-              : "Tap the photo to open your birthday surprise for Mom."}
+              : "Amma, this one’s for you 💕 Tap to see our birthday wish 🎉"}
           </p>
         </div>
 
@@ -160,49 +160,46 @@ export default function Home() {
             {/* Subtle pattern / vignette inside */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(251,113,133,0.11),_transparent_55%)]" />
 
-            {/* Inside message */}
-            <div
-              className={`absolute inset-0 z-0 px-5 sm:px-8 md:px-14 py-6 sm:py-8 md:py-10 flex flex-col justify-center transition-all duration-700 ${
-                isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-              }`}
-            >
-              <div className="mb-4 sm:mb-6">
-                <p className="text-[10px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] text-rose-400 uppercase">
-                  Happy Birthday, Mom
-                </p>
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mt-2">
-                  To the heart of our family
-                </h2>
-              </div>
+{/* Inside message */}
+<div
+  className={`absolute inset-0 z-0 px-5 sm:px-8 md:px-14 py-6 sm:py-8 md:py-10 flex flex-col justify-center transition-all duration-700 ${
+    isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+  }`}
+>
+  <div className="mb-4 sm:mb-6">
+    <p className="text-[10px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] text-rose-400 uppercase">
+      Happy Birthday, Amma
+    </p>
+    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mt-2">
+      To the heart of our family
+    </h2>
+  </div>
 
-              <div className="space-y-3 sm:space-y-4 md:space-y-5 text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
-                <p>Dear Mom,</p>
+  <div className="space-y-3 sm:space-y-4 md:space-y-5 text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
+    <p>Dear Amma,</p>
 
-                <p>
-                  On your special day, I just want to say thank you for your
-                  endless love, your patience, and your strength. You are the
-                  heart of our family and the one who has always believed in me,
-                  even when I didn&apos;t believe in myself.
-                </p>
+    <p>
+      On your special day, we just want to say thank you for your endless love,
+      your patience, and your strength. You are the heart of our family and the
+      one who always holds us together.
+    </p>
+    <p>
+      We are so grateful to have you, and we love you more than words can ever
+      say.
+    </p>
+  </div>
 
-              
-                <p>
-                  I am so grateful to call you my mother, and I love you more
-                  than words can ever say.
-                </p>
-              </div>
+  <div className="mt-4 sm:mt-6 flex items-center justify-between text-xs sm:text-sm text-rose-400/80">
+    <span className="italic">Today and always, we celebrate you.</span>
+    <span className="h-px flex-1 mx-3 bg-rose-200/70" />
+  </div>
 
-              <div className="mt-4 sm:mt-6 flex items-center justify-between text-xs sm:text-sm text-rose-400/80">
-                <span className="italic">Today and always, we celebrate you.</span>
-                <span className="h-px flex-1 mx-3 bg-rose-200/70" />
-              </div>
-
-              <p className="mt-2 text-right text-sm sm:text-base md:text-lg font-semibold text-rose-500 flex items-center justify-end gap-1">
-                With all my love,
-                <span>your child</span>
-                <FaHeart className="text-rose-400 animate-pulse" />
-              </p>
-            </div>
+  <p className="mt-2 text-right text-sm sm:text-base md:text-lg font-semibold text-rose-500 flex items-center justify-end gap-1">
+    With all our love,
+    <span>Your Sanath Ayya,Baba &amp; Malli</span>
+    <FaHeart className="text-rose-400 animate-pulse" />
+  </p>
+</div>
 
             {/* Photo cover that splits to both sides */}
             <div className="absolute inset-0 z-10">
